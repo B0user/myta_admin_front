@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import {
     AppBar,
@@ -14,7 +14,9 @@ import {
     Toolbar,
     Typography,
     Button,
-    Container
+    Container,
+    Divider,
+    Collapse
 } from '@mui/material';
 import {
     Menu as MenuIcon,
@@ -23,28 +25,45 @@ import {
     Report as ReportIcon,
     BarChart as BarChartIcon,
     Settings as SettingsIcon,
-    Logout as LogoutIcon
+    Logout as LogoutIcon,
+    ChevronLeft as ChevronLeftIcon,
+    ChevronRight as ChevronRightIcon,
+    VerifiedUser as VerifiedUserIcon,
+    Block as BlockIcon,
+    ExpandLess,
+    ExpandMore
 } from '@mui/icons-material';
 import config from '../config';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 const drawerWidth = 240;
 
-function Layout({ children }) {
+function Layout() {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [moderationOpen, setModerationOpen] = useState(true);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
     const navigate = useNavigate();
-
-    const navigation = [
-        { name: 'Dashboard', path: config.ROUTES.DASHBOARD, icon: <DashboardIcon /> },
-        { name: 'Users', path: config.ROUTES.USERS, icon: <PeopleIcon /> },
-        { name: 'Reports', path: config.ROUTES.REPORTS, icon: <ReportIcon /> },
-        { name: 'Statistics', path: config.ROUTES.STATS, icon: <BarChartIcon /> },
-        { name: 'Settings', path: config.ROUTES.SETTINGS, icon: <SettingsIcon /> },
-    ];
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    const handleModerationToggle = () => {
+        setModerationOpen(!moderationOpen);
+    };
+
+    const navigation = [
+        { name: 'Dashboard', path: config.ROUTES.DASHBOARD, icon: <DashboardIcon /> },
+        { name: 'Users', path: config.ROUTES.USERS, icon: <PeopleIcon /> },
+        { name: 'Settings', path: config.ROUTES.SETTINGS, icon: <SettingsIcon /> },
+    ];
+
+    const moderationItems = [
+        { text: 'Verification', path: config.ROUTES.VERIFICATION, icon: <VerifiedUserIcon /> },
+        { text: 'Ban Users', path: config.ROUTES.BAN, icon: <BlockIcon /> },
+    ];
 
     const handleLogout = () => {
         navigate(config.ROUTES.LOGIN);
@@ -57,21 +76,51 @@ function Layout({ children }) {
                     Admin Panel
                 </Typography>
             </Toolbar>
+            <Divider />
             <List>
                 {navigation.map((item) => (
-                    <ListItem key={item.path} disablePadding>
-                        <ListItemButton
-                            component={Link}
-                            to={item.path}
-                            selected={location.pathname === item.path}
-                        >
-                            <ListItemIcon>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.name} />
-                        </ListItemButton>
+                    <ListItem
+                        button
+                        key={item.name}
+                        onClick={() => {
+                            navigate(item.path);
+                            if (isMobile) setMobileOpen(false);
+                        }}
+                        selected={location.pathname === item.path}
+                    >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.name} />
                     </ListItem>
                 ))}
+            </List>
+            <Divider />
+            <List>
+                <ListItem button onClick={handleModerationToggle}>
+                    <ListItemIcon>
+                        <VerifiedUserIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Moderation" />
+                    {moderationOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={moderationOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        {moderationItems.map((item) => (
+                            <ListItem
+                                button
+                                key={item.text}
+                                onClick={() => {
+                                    navigate(item.path);
+                                    if (isMobile) setMobileOpen(false);
+                                }}
+                                selected={location.pathname === item.path}
+                                sx={{ pl: 4 }}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </Collapse>
             </List>
         </div>
     );
@@ -97,7 +146,9 @@ function Layout({ children }) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                        {navigation.find(item => item.path === location.pathname)?.name || 'Admin Panel'}
+                        {navigation.find(item => item.path === location.pathname)?.name || 
+                         moderationItems.find(item => item.path === location.pathname)?.text || 
+                         'Admin Panel'}
                     </Typography>
                     <Button
                         color="inherit"
@@ -148,9 +199,13 @@ function Layout({ children }) {
                     flexDirection: 'column'
                 }}
             >
-                <Container maxWidth="lg" sx={{ flexGrow: 1, py: 3 }}>
-                    {children}
-                </Container>
+                <Box sx={{ 
+                    width: '100%',
+                    height: '100%',
+                    p: 3
+                }}>
+                    <Outlet />
+                </Box>
             </Box>
         </Box>
     );

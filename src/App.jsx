@@ -5,6 +5,10 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Users from './pages/Users';
+import Verification from './pages/Verification';
+import Ban from './pages/Ban';
+import Settings from './pages/Settings';
 import config from './config';
 import theme from './theme';
 
@@ -21,10 +25,12 @@ function App() {
                     {/* All routes under Layout */}
                     <Route element={<Layout />}>
                         <Route path={config.ROUTES.DASHBOARD} element={<Dashboard />} />
-                        <Route path={config.ROUTES.USERS} element={<div>Users Page</div>} />
+                        <Route path="/users" element={<Users />} />
                         <Route path={config.ROUTES.REPORTS} element={<div>Reports Page</div>} />
                         <Route path={config.ROUTES.STATS} element={<div>Stats Page</div>} />
-                        <Route path={config.ROUTES.SETTINGS} element={<div>Settings Page</div>} />
+                        <Route path={config.ROUTES.SETTINGS} element={<Settings />} />
+                        <Route path={config.ROUTES.VERIFICATION} element={<Verification />} />
+                        <Route path={config.ROUTES.BAN} element={<Ban />} />
                     </Route>
                 </Routes>
             </Router>

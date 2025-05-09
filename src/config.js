@@ -7,12 +7,12 @@ const config = {
             VALIDATE: '/auth/admin/validate'
         },
         USERS: {
-            LIST: '/admin/users',
-            GET: (id) => `/admin/users/${id}`,
-            UPDATE: (id) => `/admin/users/${id}`,
-            DELETE: (id) => `/admin/users/${id}`,
-            VERIFY: (id) => `/admin/users/${id}/verify`,
-            REJECT: (id) => `/admin/users/${id}/reject`
+            LIST: '/users',
+            GET: (id) => `/users/${id}`,
+            UPDATE: (id) => `/users/${id}`,
+            DELETE: (id) => `/users/${id}`,
+            VERIFY: (id) => `/users/${id}/verify`,
+            REJECT: (id) => `/users/${id}/reject`
         },
         REPORTS: {
             LIST: '/admin/reports',
@@ -33,7 +33,9 @@ const config = {
         USERS: '/users',
         REPORTS: '/reports',
         STATS: '/stats',
-        SETTINGS: '/settings'
+        SETTINGS: '/settings',
+        VERIFICATION: '/verification',
+        BAN: '/ban'
     },
     STORAGE_KEYS: {
         TOKEN: 'admin_token',
