@@ -1,18 +1,18 @@
 const config = {
-    API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+    API_URL: 'http://localhost:3001',
     API: {
         AUTH: {
-            LOGIN: '/auth/admin/login',
-            REFRESH: '/auth/admin/refresh',
-            VALIDATE: '/auth/admin/validate'
+            LOGIN: '/admin/login',
+            REFRESH: '/admin/refresh',
+            LOGOUT: '/admin/logout'
         },
         USERS: {
-            LIST: '/users',
-            GET: (id) => `/users/${id}`,
-            UPDATE: (id) => `/users/${id}`,
-            DELETE: (id) => `/users/${id}`,
-            VERIFY: (id) => `/users/${id}/verify`,
-            REJECT: (id) => `/users/${id}/reject`
+            LIST: '/admin/users',
+            GET: (id) => `/admin/users/${id}`,
+            UPDATE: (id) => `/admin/users/${id}`,
+            DELETE: (id) => `/admin/users/${id}`,
+            VERIFY: (id) => `/admin/users/${id}/verify`,
+            REJECT: (id) => `/admin/users/${id}/reject`
         },
         REPORTS: {
             LIST: '/admin/reports',
