@@ -101,7 +101,7 @@ const Verification = () => {
     try {
       // await axiosPrivate.put(`/verifications/${selectedVerification._id}`, { status });
       // For testing, update mock data
-      setVerifications(verifications.map(v => 
+      setVerifications(verifications?.map(v => 
         v._id === selectedVerification._id ? { ...v, status } : v
       ));
       toast.success(`Verification ${status === 'approved' ? 'approved' : 'rejected'} successfully`);
@@ -129,7 +129,7 @@ const Verification = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {verifications.map((verification) => (
+            {verifications?.map((verification) => (
               <TableRow key={verification._id}>
                 <TableCell>{verification.userName}</TableCell>
                 <TableCell>

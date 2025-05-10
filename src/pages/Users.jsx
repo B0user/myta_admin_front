@@ -33,6 +33,16 @@ import {
 import { toast } from 'react-hot-toast';
 import { axiosPrivate } from '../axios';
 
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
+import SwiperCore from 'swiper';
+
+
+
 // Mock data for testing
 const mockUsers = [
   {
@@ -73,6 +83,8 @@ const Users = () => {
   const [openUploadDialog, setOpenUploadDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
+    photos: [],
+    audioMessage: '',
     name: '',
     gender: '',
     wantToFind: '',
@@ -92,14 +104,10 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       // For testing, we'll use mock data
-      // const response = await axiosPrivate.get('/users', {
-      //   params: {
-      //     page: page + 1,
-      //     limit: rowsPerPage
-      //   }
-      // });
-      // setUsers(response.data.users);
-      setUsers(mockUsers);
+      const response = await axiosPrivate.get('/admin/users' );
+      console.log(response);
+      setUsers(response.data.users);
+    //   setUsers(mockUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error('Failed to fetch users');
@@ -119,6 +127,8 @@ const Users = () => {
     if (user) {
       setSelectedUser(user);
       setFormData({
+        photos: user.photos,
+        audioMessage: user.audioMessage,
         name: user.name || '',
         gender: user.gender || '',
         wantToFind: user.wantToFind || '',
@@ -133,6 +143,8 @@ const Users = () => {
     } else {
       setSelectedUser(null);
       setFormData({
+        photos: user.photos,
+        audioMessage: user.audioMessage,
         name: '',
         gender: '',
         wantToFind: '',
@@ -174,11 +186,12 @@ const Users = () => {
   const handleSubmit = async () => {
     try {
       if (selectedUser) {
-        // await axiosPrivate.put(`/users/${selectedUser._id}`, formData);
+        console.log(formData);
+        // await axiosPrivate.put(`/admin/users/${selectedUser._id}`, formData);
         // For testing, update mock data
-        setUsers(users.map(user => 
-          user._id === selectedUser._id ? { ...user, ...formData } : user
-        ));
+        // setUsers(users.map(user => 
+        //   user._id === selectedUser._id ? { ...user, ...formData } : user
+        // ));
         toast.success('User updated successfully');
       } else {
         // await axiosPrivate.post('/users', formData);
@@ -420,6 +433,36 @@ const Users = () => {
         <DialogContent>
           {selectedUser && (
             <Grid container spacing={2} sx={{ mt: 1 }}>
+
+            <Grid item xs={12}>
+              {selectedUser.photos && selectedUser.photos.length > 0 && (
+                <Swiper
+                  spaceBetween={10}
+                  slidesPerView={1}
+                  navigation
+                  pagination={{ clickable: true }}
+                  style={{ width: '100%', height: '300px' }}
+                >
+                  {selectedUser.photos.map((photo, index) => (
+                    <SwiperSlide key={index}>
+                      <Box
+                        component="img"
+                        src={photo}
+                        alt={`User photo ${index + 1}`}
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: 2,
+                        }}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
+            </Grid>
+
+
               <Grid item xs={12}>
                 <Typography variant="h6">{selectedUser.name}</Typography>
                 <Divider sx={{ my: 1 }} />
