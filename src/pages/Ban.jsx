@@ -73,14 +73,15 @@ const Ban = () => {
   const fetchUsers = async () => {
     try {
       // For testing, we'll use mock data
-      // const response = await axiosPrivate.get('/users', {
-      //   params: {
-      //     page: page + 1,
-      //     limit: rowsPerPage
-      //   }
-      // });
-      // setUsers(response.data.users);
-      setUsers(mockUsers);
+      const response = await axiosPrivate.get('/admin/users', {
+        params: {
+          page: page + 1,
+          limit: rowsPerPage
+        }
+      });
+      console.log(response);
+      setUsers(response.data.users);
+      // setUsers(mockUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error('Failed to fetch users');
@@ -114,7 +115,7 @@ const Ban = () => {
 
   const handleBan = async () => {
     try {
-      // await axiosPrivate.put(`/users/${selectedUser._id}/ban`, { reason: banReason });
+      await axiosPrivate.put(`/admin/users/${selectedUser._id}/ban`, { ban:true, reason: banReason });
       // For testing, update mock data
       setUsers(users.map(user => 
         user._id === selectedUser._id ? {
@@ -134,7 +135,7 @@ const Ban = () => {
   const handleUnban = async (userId) => {
     if (window.confirm('Are you sure you want to unban this user?')) {
       try {
-        // await axiosPrivate.put(`/users/${userId}/unban`);
+        await axiosPrivate.put(`/admin/users/${userId}/unban`, {ban:false});
         // For testing, update mock data
         setUsers(users.map(user => 
           user._id === userId ? {
@@ -193,16 +194,20 @@ const Ban = () => {
                 <TableCell>{user.telegramId}</TableCell>
                 <TableCell>
                   <Chip
-                    label={user.isBanned ? 'Banned' : 'Active'}
-                    color={user.isBanned ? 'error' : 'success'}
+                    label={user.banStatus?.ban ? 'Banned' : 'Active'}
+                    color={user.banStatus?.ban ? 'error' : 'success'}
                   />
                 </TableCell>
-                <TableCell>{user.banReason || '-'}</TableCell>
                 <TableCell>
-                  {user.bannedAt ? new Date(user.bannedAt).toLocaleString() : '-'}
+                  {user.banStatus?.history?.[user.banStatus.history.length - 1]?.reason || '-'}
                 </TableCell>
                 <TableCell>
-                  {user.isBanned ? (
+                  {user.banStatus?.history?.[user.banStatus.history.length - 1]?.date
+                    ? new Date(user.banStatus.history[user.banStatus.history.length - 1].date).toLocaleString()
+                    : '-'}
+                </TableCell>
+                <TableCell>
+                  {user.banStatus?.ban ? (
                     <Tooltip title="Unban">
                       <IconButton onClick={() => handleUnban(user._id)} color="success">
                         <UnbanIcon />
