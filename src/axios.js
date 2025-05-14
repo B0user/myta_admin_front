@@ -21,7 +21,6 @@ export const axiosPrivate = axios.create({
 axiosPrivate.interceptors.request.use(
     (conf) => {
         const token = localStorage.getItem(config.STORAGE_KEYS.TOKEN);
-        console.log(token);
         if (token) {
             conf.headers.Authorization = `Bearer ${token}`;
         }

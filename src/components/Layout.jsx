@@ -41,6 +41,7 @@ const drawerWidth = 240;
 function Layout() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [moderationOpen, setModerationOpen] = useState(true);
+    const [usersOpen, setUsersOpen] = useState(true);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
@@ -54,10 +55,19 @@ function Layout() {
         setModerationOpen(!moderationOpen);
     };
 
+    const handleUsersToggle = () => {
+        setUsersOpen(!usersOpen);
+    };
+
     const navigation = [
         { name: 'Dashboard', path: config.ROUTES.DASHBOARD, icon: <DashboardIcon /> },
         { name: 'Users', path: config.ROUTES.USERS, icon: <PeopleIcon /> },
-        { name: 'Settings', path: config.ROUTES.SETTINGS, icon: <SettingsIcon /> },
+        // { name: 'Settings', path: config.ROUTES.SETTINGS, icon: <SettingsIcon /> },
+    ];
+
+    const userItems = [
+        { text: 'All Users', path: config.ROUTES.USERS, icon: <PeopleIcon /> },
+        { text: 'Wallets', path: config.ROUTES.WALLETS, icon: <BarChartIcon /> },
     ];
 
     const moderationItems = [
@@ -78,21 +88,45 @@ function Layout() {
             </Toolbar>
             <Divider />
             <List>
-                {navigation.map((item) => (
+                {navigation.map((item, index) => (
                     <ListItem
                         button
-                        key={item.name}
+                        key={index}
                         onClick={() => {
-                            navigate(item.path);
-                            if (isMobile) setMobileOpen(false);
+                            if (item.name === 'Users') {
+                                handleUsersToggle();
+                            } else {
+                                navigate(item.path);
+                                if (isMobile) setMobileOpen(false);
+                            }
                         }}
                         selected={location.pathname === item.path}
                     >
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.name} />
+                        {item.name === 'Users' && (usersOpen ? <ExpandLess /> : <ExpandMore />)}
                     </ListItem>
                 ))}
             </List>
+            <Collapse in={usersOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    {userItems.map((item) => (
+                        <ListItem
+                            button
+                            key={item.text}
+                            onClick={() => {
+                                navigate(item.path);
+                                if (isMobile) setMobileOpen(false);
+                            }}
+                            selected={location.pathname === item.path}
+                            sx={{ pl: 4 }}
+                        >
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText primary={item.text} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Collapse>
             <Divider />
             <List>
                 <ListItem button onClick={handleModerationToggle}>

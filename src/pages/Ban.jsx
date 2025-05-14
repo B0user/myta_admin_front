@@ -57,10 +57,11 @@ const Ban = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [banReason, setBanReason] = useState('');
+  const [refreshUsers, setRefreshUsers] = useState(false);
 
   useEffect(() => {
     fetchUsers();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, refreshUsers]);
 
   useEffect(() => {
     const filtered = users.filter(user => 
@@ -79,7 +80,6 @@ const Ban = () => {
           limit: rowsPerPage
         }
       });
-      console.log(response);
       setUsers(response.data.users);
       // setUsers(mockUsers);
     } catch (error) {
@@ -125,6 +125,7 @@ const Ban = () => {
           bannedAt: new Date().toISOString()
         } : user
       ));
+      setRefreshUsers(!refreshUsers);
       toast.success('User banned successfully');
       handleCloseDialog();
     } catch (error) {
@@ -135,7 +136,7 @@ const Ban = () => {
   const handleUnban = async (userId) => {
     if (window.confirm('Are you sure you want to unban this user?')) {
       try {
-        await axiosPrivate.put(`/admin/users/${userId}/unban`, {ban:false});
+        await axiosPrivate.put(`/admin/users/${userId}/ban`, {ban:false});
         // For testing, update mock data
         setUsers(users.map(user => 
           user._id === userId ? {
@@ -145,6 +146,7 @@ const Ban = () => {
             bannedAt: null
           } : user
         ));
+        setRefreshUsers(!refreshUsers);
         toast.success('User unbanned successfully');
       } catch (error) {
         toast.error('Failed to unban user');
@@ -199,12 +201,12 @@ const Ban = () => {
                   />
                 </TableCell>
                 <TableCell>
-                  {user.banStatus?.history?.[user.banStatus.history.length - 1]?.reason || '-'}
+                  {user.banStatus?.ban ? user.banStatus?.history?.[user.banStatus.history.length - 1]?.reason || '-' : ''}
                 </TableCell>
                 <TableCell>
-                  {user.banStatus?.history?.[user.banStatus.history.length - 1]?.date
+                  {user.banStatus?.ban ? user.banStatus?.history?.[user.banStatus.history.length - 1]?.date
                     ? new Date(user.banStatus.history[user.banStatus.history.length - 1].date).toLocaleString()
-                    : '-'}
+                    : '-' : ''}
                 </TableCell>
                 <TableCell>
                   {user.banStatus?.ban ? (

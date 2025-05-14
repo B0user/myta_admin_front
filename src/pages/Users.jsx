@@ -82,6 +82,7 @@ const Users = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
   const [openUploadDialog, setOpenUploadDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [uploadedData, setUploadedData] = useState(null);
   const [formData, setFormData] = useState({
     photos: [],
     audioMessage: '',
@@ -105,7 +106,6 @@ const Users = () => {
     try {
       // For testing, we'll use mock data
       const response = await axiosPrivate.get('/admin/users' );
-      console.log(response);
       setUsers(response.data.users);
     //   setUsers(mockUsers);
     } catch (error) {
@@ -225,15 +225,29 @@ const Users = () => {
       reader.onload = (e) => {
         try {
           const jsonData = JSON.parse(e.target.result);
-          // Handle the JSON data here
-          console.log('Uploaded JSON:', jsonData);
+          if (!Array.isArray(jsonData)) throw new Error('Expected array');
+          setUploadedData(jsonData);
           toast.success('File uploaded successfully');
-          setOpenUploadDialog(false);
         } catch (error) {
           toast.error('Invalid JSON file');
+          setUploadedData(null);
         }
       };
       reader.readAsText(file);
+    }
+  };
+  
+  const handleConfirmUpload = async () => {
+    try {
+      const response = await axiosPrivate.post('/admin/users/upload', uploadedData);
+  
+      if (!response.ok) throw new Error('Upload failed');
+  
+      toast.success('Users uploaded successfully');
+      setUploadedData(null);
+      setOpenUploadDialog(false);
+    } catch (error) {
+      toast.error('Error uploading users');
     }
   };
 
@@ -544,8 +558,17 @@ const Users = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenUploadDialog(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!uploadedData}
+            onClick={handleConfirmUpload}
+          >
+            Upload
+          </Button>
         </DialogActions>
       </Dialog>
+
     </Box>
   );
 };

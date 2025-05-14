@@ -31,6 +31,7 @@ const config = {
         LOGIN: '/login',
         DASHBOARD: '/dashboard',
         USERS: '/users',
+        WALLETS: '/users/wallets',
         REPORTS: '/reports',
         STATS: '/stats',
         SETTINGS: '/settings',

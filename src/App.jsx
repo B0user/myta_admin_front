@@ -11,6 +11,7 @@ import Ban from './pages/Ban';
 import Settings from './pages/Settings';
 import config from './config';
 import theme from './theme';
+import Wallets from './pages/Wallets';
 
 function App() {
     return (
@@ -26,6 +27,8 @@ function App() {
                     <Route element={<Layout />}>
                         <Route path={config.ROUTES.DASHBOARD} element={<Dashboard />} />
                         <Route path="/users" element={<Users />} />
+
+                        <Route path={config.ROUTES.WALLETS} element={<Wallets/>} />
                         <Route path={config.ROUTES.REPORTS} element={<div>Reports Page</div>} />
                         <Route path={config.ROUTES.STATS} element={<div>Stats Page</div>} />
                         <Route path={config.ROUTES.SETTINGS} element={<Settings />} />
