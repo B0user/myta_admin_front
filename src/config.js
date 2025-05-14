@@ -36,7 +36,9 @@ const config = {
         STATS: '/stats',
         SETTINGS: '/settings',
         VERIFICATION: '/verification',
-        BAN: '/ban'
+        BAN: '/ban',
+        SUPPORT: '/support'
+
     },
     STORAGE_KEYS: {
         TOKEN: 'admin_token',

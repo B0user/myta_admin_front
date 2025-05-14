@@ -31,7 +31,8 @@ import {
     VerifiedUser as VerifiedUserIcon,
     Block as BlockIcon,
     ExpandLess,
-    ExpandMore
+    ExpandMore,
+    Support
 } from '@mui/icons-material';
 import config from '../config';
 import { useTheme, useMediaQuery } from '@mui/material';
@@ -73,6 +74,7 @@ function Layout() {
     const moderationItems = [
         { text: 'Verification', path: config.ROUTES.VERIFICATION, icon: <VerifiedUserIcon /> },
         { text: 'Ban Users', path: config.ROUTES.BAN, icon: <BlockIcon /> },
+        { text: 'Support', path: config.ROUTES.SUPPORT, icon: <Support /> },
     ];
 
     const handleLogout = () => {
