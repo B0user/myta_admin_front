@@ -1,5 +1,8 @@
+const PRODUCTION = true;
+
+
 const config = {
-    API_URL: 'http://localhost:3001',
+    API_URL: PRODUCTION ? 'https://api.mytadating.site' : 'http://localhost:3001',
     API: {
         AUTH: {
             LOGIN: '/admin/login',
