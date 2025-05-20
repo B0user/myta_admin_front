@@ -187,11 +187,11 @@ const Users = () => {
     try {
       if (selectedUser) {
         console.log(formData);
-        // await axiosPrivate.put(`/admin/users/${selectedUser._id}`, formData);
+        await axiosPrivate.put(`/admin/users/${selectedUser._id}`, formData);
         // For testing, update mock data
-        // setUsers(users.map(user => 
-        //   user._id === selectedUser._id ? { ...user, ...formData } : user
-        // ));
+        setUsers(users.map(user => 
+          user._id === selectedUser._id ? { ...user, ...formData } : user
+        ));
         toast.success('User updated successfully');
       } else {
         // await axiosPrivate.post('/users', formData);
@@ -208,8 +208,7 @@ const Users = () => {
   const handleDelete = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        // await axiosPrivate.delete(`/users/${userId}`);
-        // For testing, remove from mock data
+        await axiosPrivate.delete(`/admin/users/${userId}`);
         setUsers(users.filter(user => user._id !== userId));
         toast.success('User deleted successfully');
       } catch (error) {

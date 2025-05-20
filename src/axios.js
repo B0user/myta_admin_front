@@ -50,7 +50,7 @@ axiosPrivate.interceptors.response.use(
                 // Try to refresh the token
                 const response = await axiosPublic.post(config.API.AUTH.REFRESH, {
                     refreshToken
-                });
+                });``
 
                 const { token, refreshToken: newRefreshToken } = response.data;
 
